@@ -4,8 +4,6 @@ import plotly.express as px
 import streamlit as st
 import openai
 
-# Load environment variables from .env file
-load_dotenv()
 
 # Fetch the OpenAI API key
 openai.api_key = st.secrets["OPENAI_API_KEY"]
