@@ -1,0 +1,41 @@
+# Sidebar filters
+st.sidebar.header("Please Filter Here:")
+
+# Get query parameters from the URL
+params = st.experimental_get_query_params()
+
+# Set default filter values based on URL parameters or fallback to default
+region_param = params.get("Region", [])[0] if "Region" in params else None
+segment_param = params.get("Segment", [])[0] if "Segment" in params else None
+ship_mode_param = params.get("Ship_Mode", [])[0] if "Ship_Mode" in params else None
+
+# Sidebar multiselects for filters
+Region = st.sidebar.multiselect(
+    "Select the Region:",
+    options=df["Region"].unique(),
+    default=[region_param] if region_param else df["Region"].unique()
+)
+
+Segment = st.sidebar.multiselect(
+    "Select the Segment:",
+    options=df["Segment"].unique(),
+    default=[segment_param] if segment_param else df["Segment"].unique()
+)
+
+Ship_Mode = st.sidebar.multiselect(
+    "Select the Ship Mode:",
+    options=df["Ship_Mode"].unique(),
+    default=[ship_mode_param] if ship_mode_param else df["Ship_Mode"].unique()
+)
+
+# Function to update the URL query parameters
+def update_url():
+    new_params = {
+        "Region": ",".join(Region),
+        "Segment": ",".join(Segment),
+        "Ship_Mode": ",".join(Ship_Mode)
+    }
+    st.experimental_set_query_params(**new_params)
+
+# Update the URL when filters change
+update_url()
