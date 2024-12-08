@@ -6,7 +6,7 @@ import openai
 
 
 # Fetch the OpenAI API key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# openai.api_key = st.secrets["OPENAI_API_KEY"]
 gemini_api_key = st.secrets["GEMINI_API_KEY"]  # Fetch Gemini API key
 
 # Set Streamlit page configuration
@@ -162,7 +162,7 @@ data_summary = (
 # Button to trigger insights generation
 if st.button("Generate Insights"):
     with st.spinner("Generating insights..."):
-        if openai.api_key is None:  # Check if the OpenAI API key is missing
+        if True:  # Check if the OpenAI API key is missing
             if gemini_api_key:  # If Gemini API key exists, use Gemini
                 try:
                     # Configure Gemini API

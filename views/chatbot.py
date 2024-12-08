@@ -3,7 +3,7 @@ import pandas as pd
 import streamlit as st
 import google.generativeai as genai
 
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# openai.api_key = st.secrets["OPENAI_API_KEY"]
 gemini_api_key = st.secrets["GEMINI_API_KEY"]
 
 # Streamlit UI setup
@@ -60,7 +60,7 @@ if prompt := st.chat_input("Ask a question about the sales data:"):
     # Generate assistant response using OpenAI or Gemini
     try:
         with st.chat_message("assistant"):
-            if openai.api_key is None:
+            if True:
                 # Create the model with Gemini's configuration
                 generation_config = {
                     "temperature": 0.7,
