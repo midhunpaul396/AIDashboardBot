@@ -15,31 +15,55 @@ gemini_api_key = st.secrets["GEMINI_API_KEY"]  # Fetch Gemini API key
 # Load the dataset
 df = pd.read_csv('Dataset.csv')
 
-# Initialize session state for filters
-if "Region" not in st.session_state:
-    st.session_state["Region"] = df["Region"].unique().tolist()
-if "Segment" not in st.session_state:
-    st.session_state["Segment"] = df["Segment"].unique().tolist()
-if "Ship_Mode" not in st.session_state:
-    st.session_state["Ship_Mode"] = df["Ship_Mode"].unique().tolist()
-
 # Sidebar filters
 st.sidebar.header("Please Filter Here:")
+
+
+# Check if filters are in session state; if not, initialize them
+if "Region" not in st.session_state:
+    st.session_state.Region = df["Region"].unique()
+if "Segment" not in st.session_state:
+    st.session_state.Segment = df["Segment"].unique()
+if "Ship_Mode" not in st.session_state:
+    st.session_state.Ship_Mode = df["Ship_Mode"].unique()
+
+def regionCallback():
+    st.session_state.Region = st.session_state.RegKey
+def SegmentCallback():
+    st.session_state.Segment = st.session_state.SegKey
+def shipModeCallback():
+    st.session_state.Ship_Mode = st.session_state.ShipKey
+
+
+# Sidebar multiselect filters using session state
+
 Region = st.sidebar.multiselect(
     "Select the Region:",
     options=df["Region"].unique(),
-    default=df["Region"].unique()
+    default=st.session_state.Region,
+    on_change=regionCallback,
+    key = 'RegKey'
 )
 Segment = st.sidebar.multiselect(
     "Select the Segment:",
     options=df["Segment"].unique(),
-    default=df["Segment"].unique()
+    default=st.session_state.Segment,
+    on_change=SegmentCallback,
+    key = 'SegKey'
+
 )
 Ship_Mode = st.sidebar.multiselect(
     "Select the Ship Mode:",
     options=df["Ship_Mode"].unique(),
-    default=df["Ship_Mode"].unique()
+    default=st.session_state.Ship_Mode,
+    on_change=shipModeCallback,
+    key = 'ShipKey'
 )
+
+# Update session state with the latest filter values
+st.session_state.Region = Region
+st.session_state.Segment = Segment
+st.session_state.Ship_Mode = Ship_Mode
 
 # Data selection based on filters
 df_selection = df.query(
@@ -60,6 +84,10 @@ total_profit = round(df_selection["Profit"].sum(), 2)  # Total Profit
 average_discount = round(df_selection["Discount"].mean() * 100, 1)  # Average Discount in %
 total_orders = df_selection["Order ID"].nunique()  # Total Unique Orders
 average_sales_per_order = round(total_sales / total_orders, 2)  # Avg Sales/Order
+total_quantity_sold = df_selection["Quantity"].sum()  # Total Quantity Sold
+total_discount = round(df_selection["Discount"].sum(), 2)  # Total Discount
+profit_margin = round((total_profit / total_sales) * 100, 2)  # Profit Margin
+sales_per_customer = round(total_sales / df_selection['Customer ID'].nunique(), 2)  # Sales per Customer
 
 # Store KPIs in session state
 st.session_state.total_sales = total_sales
@@ -67,7 +95,10 @@ st.session_state.total_profit = total_profit
 st.session_state.average_discount = average_discount
 st.session_state.total_orders = total_orders
 st.session_state.average_sales_per_order = average_sales_per_order
-st.session_state.unique_customers = df_selection['Customer ID'].nunique()
+st.session_state.total_quantity_sold = total_quantity_sold
+st.session_state.total_discount = total_discount
+st.session_state.profit_margin = profit_margin
+st.session_state.sales_per_customer = sales_per_customer
 
 # Displaying KPIs
 left_column, middle_column, right_column = st.columns(3)
@@ -155,8 +186,16 @@ data_summary = (
     f"Total Profit: ${total_profit:,}\n"
     f"Average Discount: {average_discount}%\n"
     f"Average Sales per Order: ${average_sales_per_order:,}\n"
+    f"Total Quantity Sold: {total_quantity_sold:,} units\n"
+    f"Total Discount Given: ${total_discount:,}\n"
+    f"Profit Margin: {profit_margin}%\n"
+    f"Sales per Customer: ${sales_per_customer:,}\n"
     f"Number of Unique Customers: {df_selection['Customer ID'].nunique()}\n\n"
-    f"Please analyze the data for potential patterns, identify anomalies or outliers, and provide actionable insights that can help optimize sales and profits. Highlight any trends in sales by product category or region."
+    f"Please analyze the data for potential patterns, identify anomalies or outliers, and provide actionable insights "
+    f"that can help optimize sales and profits. Highlight any trends in sales by product category or region. "
+    f"Consider analyzing the relationship between discount rates, sales, and profit margins for further opportunities "
+    f"to optimize pricing strategies. Identify any trends related to customer purchasing behaviors, such as repeat buyers "
+    f"or the impact of discounts on customer loyalty."
 )
 
 # Button to trigger insights generation

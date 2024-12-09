@@ -18,6 +18,10 @@ if "total_sales" not in st.session_state:
     average_discount = round(df["Discount"].mean() * 100, 1)  # Average Discount in %
     total_orders = df["Order ID"].nunique()  # Total Unique Orders
     average_sales_per_order = round(total_sales / total_orders, 2)  # Avg Sales/Order
+    total_quantity_sold = df["Quantity"].sum()  # Total Quantity Sold
+    total_discount = round(df["Discount"].sum(), 2)  # Total Discount
+    profit_margin = round((total_profit / total_sales) * 100, 2)  # Profit Margin
+    sales_per_customer = round(total_sales / df['Customer ID'].nunique(), 2)  # Sales per Customer
 
     # Store KPIs in session state
     st.session_state.total_sales = total_sales
@@ -25,7 +29,10 @@ if "total_sales" not in st.session_state:
     st.session_state.average_discount = average_discount
     st.session_state.total_orders = total_orders
     st.session_state.average_sales_per_order = average_sales_per_order
-    st.session_state.unique_customers = df['Customer ID'].nunique()
+    st.session_state.total_quantity_sold = total_quantity_sold
+    st.session_state.total_discount = total_discount
+    st.session_state.profit_margin = profit_margin
+    st.session_state.sales_per_customer = sales_per_customer
 
 # Define the data summary context
 data_summary = (
@@ -34,9 +41,15 @@ data_summary = (
     f"Total Profit: ${st.session_state.total_profit:,}\n"
     f"Average Discount: {st.session_state.average_discount}%\n"
     f"Average Sales per Order: ${st.session_state.average_sales_per_order:,}\n"
+    f"Total Quantity Sold: {st.session_state.total_quantity_sold:,} units\n"
+    f"Total Discount Given: ${st.session_state.total_discount:,}\n"
+    f"Profit Margin: {st.session_state.profit_margin}%\n"
+    f"Sales per Customer: ${st.session_state.sales_per_customer:,}\n"
     f"Total Unique Orders: {st.session_state.total_orders}\n\n"
     "You are an intelligent assistant that provides explanations about the key performance indicators (KPIs) and trends in sales and profit. "
-    "You can also identify patterns, insights, and suggestions based on the given metrics and user queries."
+    "You can also identify patterns, insights, and suggestions based on the given metrics and user queries. "
+    "Ask me about sales trends, profit margins, customer behavior, product category performance, or anything else related to the dataset. "
+    "I can help you understand which areas are performing well and where improvements can be made."
 ) 
 
 # Initialize chat history
