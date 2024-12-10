@@ -3,3 +3,5 @@ streamlit==1.40.1
 openai
 google-generativeai
 plotly
+fpdf
+kaleido

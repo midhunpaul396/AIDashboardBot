@@ -3,6 +3,8 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 import openai
+from fpdf import FPDF
+import base64
 
 
 # Fetch the OpenAI API key
@@ -232,6 +234,8 @@ if st.button("Generate Insights"):
                     # Generate insights using Gemini
                     response = chat_session.send_message(data_summary)
 
+                    st.session_state["gemini_insights"] = response.text
+
                     # Display Gemini insights
                     st.subheader("AI-Generated Insights")
                     st.write(response.text)
@@ -257,3 +261,95 @@ if st.button("Generate Insights"):
 
             except Exception as e:
                 st.error(f"Error generating insights with OpenAI: {e}")
+# Function to generate a PDF report
+def generate_pdf_report(kpis, visualizations, gemini_insights):
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+
+    # Title
+    pdf.set_font("Arial", style="B", size=16)
+    pdf.cell(200, 10, txt="AI Sales Dashboard Report", ln=True, align="C")
+    pdf.ln(10)
+
+    # KPIs
+    pdf.set_font("Arial", style="B", size=14)
+    pdf.cell(200, 10, txt="Key Metrics", ln=True)
+    pdf.set_font("Arial", size=12)
+    for kpi, value in kpis.items():
+        pdf.cell(200, 10, txt=f"{kpi}: {value}", ln=True)
+
+    pdf.ln(10)
+
+    # AI Insights
+    pdf.set_font("Arial", style="B", size=14)
+    pdf.cell(200, 10, txt="AI-Generated Insights", ln=True)
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, gemini_insights)
+
+    pdf.ln(10)
+
+    # Visualizations
+    pdf.set_font("Arial", style="B", size=14)
+    pdf.cell(200, 10, txt="Visualizations", ln=True)
+    pdf.set_font("Arial", size=12)
+    for viz_title, viz_path in visualizations.items():
+        pdf.cell(200, 10, txt=viz_title, ln=True)
+        pdf.image(viz_path, w=170)
+        pdf.ln(10)
+
+    return pdf
+
+include_ai_insights = st.checkbox("Include AI Insights in the Report", value=False)
+# Button to generate and download the report
+if st.button("Download PDF Report"):
+    with st.spinner("Generating PDF report..."):
+        try:
+            # Prepare KPIs, insights, and visualizations for the report
+            kpis = {
+                "Total Sales": f"${total_sales:,}",
+                "Total Profit": f"${total_profit:,}",
+                "Average Discount": f"{average_discount}%",
+                "Total Orders": total_orders,
+                "Average Sales/Order": f"${average_sales_per_order:,}",
+                "Total Quantity Sold": total_quantity_sold,
+                "Profit Margin": f"{profit_margin}%",
+                "Sales per Customer": f"${sales_per_customer:,}"
+            }
+
+            # Example paths to images for visualizations
+            sales_profit_by_product_line_path = "sales_profit_by_product_line.png"
+            sales_profit_by_category_path = "sales_profit_by_category.png"
+            sales_by_region_path = "sales_by_region.png"
+
+            # Save visualizations to files
+            fig_sales_profit_area.write_image(sales_profit_by_product_line_path)
+            fig_sales_profit.write_image(sales_profit_by_category_path)
+            fig_sales_profit_region.write_image(sales_by_region_path)
+
+            visualizations = {
+                "Sales and Profit by Product Line": sales_profit_by_product_line_path,
+                "Sales and Profit by Category": sales_profit_by_category_path,
+                "Total Sales by Region": sales_by_region_path
+            }
+
+            # Conditionally include AI insights
+            gemini_insights = st.session_state.get("gemini_insights", "No Gemini insights available.") if include_ai_insights else ""
+
+            # Generate PDF
+            pdf = generate_pdf_report(kpis, visualizations, gemini_insights)
+
+            # Save PDF to a temporary file
+            pdf_path = "AI_Sales_Dashboard_Report.pdf"
+            pdf.output(pdf_path)
+
+            # Encode PDF for download
+            with open(pdf_path, "rb") as f:
+                pdf_data = f.read()
+
+            b64 = base64.b64encode(pdf_data).decode()  # Base64 encoding
+            href = f'<a href="data:application/octet-stream;base64,{b64}" download="AI_Sales_Dashboard_Report.pdf">Click here to download the report</a>'
+            st.markdown(href, unsafe_allow_html=True)
+        except Exception as e:
+            st.error(f"Error generating PDF report: {e}")
