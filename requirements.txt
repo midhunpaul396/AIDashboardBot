@@ -4,4 +4,4 @@ openai
 google-generativeai
 plotly
 fpdf
-kaleido
+base64
