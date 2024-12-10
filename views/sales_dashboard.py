@@ -337,7 +337,7 @@ if st.button("Download PDF Report"):
             # Conditionally include AI insights
             gemini_insights = st.session_state.get("gemini_insights", "No Gemini insights available.") if include_ai_insights else ""
 
-            # Generate PDF
+            # Generate PDFs
             pdf = generate_pdf_report(kpis, visualizations, gemini_insights)
 
             # Save PDF to a temporary file
