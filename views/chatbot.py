@@ -124,7 +124,7 @@ if prompt := st.chat_input("Ask a question about the sales data:"):
                         {"role": "user", "content": data_summary},  # Include the data summary as context
                         {"role": "user", "content": prompt},  # User's input query
                     ],
-                    max_tokens=150,
+                    max_tokens=550,
                     temperature=0.7,
                 )
 

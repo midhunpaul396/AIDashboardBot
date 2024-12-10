@@ -191,7 +191,7 @@ data_summary = (
     f"Profit Margin: {profit_margin}%\n"
     f"Sales per Customer: ${sales_per_customer:,}\n"
     f"Number of Unique Customers: {df_selection['Customer ID'].nunique()}\n\n"
-    f"Please analyze the data for potential patterns, identify anomalies or outliers, and provide actionable insights "
+    f"Please analyze this data for potential patterns, identify anomalies or outliers, and provide actionable insights "
     f"that can help optimize sales and profits. Highlight any trends in sales by product category or region. "
     f"Consider analyzing the relationship between discount rates, sales, and profit margins for further opportunities "
     f"to optimize pricing strategies. Identify any trends related to customer purchasing behaviors, such as repeat buyers "
@@ -246,7 +246,7 @@ if st.button("Generate Insights"):
                     model="gpt-3.5-turbo",
                     messages=[{"role": "system", "content": "You are an expert data analyst."},
                               {"role": "user", "content": data_summary}],
-                    max_tokens=500,
+                    max_tokens=600,
                     temperature=0.7,
                 )
 
