@@ -1,19 +1,27 @@
-AI Dashbot: Generative AI-Powered Sales Dashboard
+# AI Dashbot: Generative AI-Powered Sales Dashboard  
+
 AI Dashbot is a dynamic, generative AI-powered dashboard designed to provide actionable insights into store performance. It features interactive visualizations, a chatbot powered by AI models like OpenAI and Gemini, and filtering options for tailored data analysis, supporting better decision-making.
 
-🛠 Features
-Sales Dashboard
-Visualize and analyze store performance with interactive charts and insights.
+---
 
-AI Chat Bot
-Engage with a chatbot that leverages advanced AI models for intelligent responses and data queries.
+## 🛠 Features  
 
-Streamlined Navigation
-Easily toggle between the dashboard and chatbot with a toolbar-style navigation system.
+- **Sales Dashboard**  
+  Visualize and analyze store performance with interactive charts and insights.  
 
-🚀 Live Demo
-Explore the live app: [AI Dashbot](https://aidashbot.streamlit.app/)
+- **AI Chat Bot**  
+  Engage with a chatbot that leverages advanced AI models for intelligent responses and data queries.  
 
+- **Streamlined Navigation**  
+  Easily toggle between the dashboard and chatbot with a toolbar-style navigation system.  
+
+---
+
+## 🚀 Live Demo  
+
+Explore the live app: [AI Dashbot](https://aidashbot.streamlit.app/)  
+
+---
 📂 Project Structure
 bash
 Copy code
